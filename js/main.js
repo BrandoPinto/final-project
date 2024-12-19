@@ -13,29 +13,35 @@ document.addEventListener("DOMContentLoaded", () => {
     const mealSearchBtn = document.getElementById("meal-search-btn");
     const searchResults = document.getElementById("search-results");
 
-    // Modal elements
-    const modal = document.getElementById("recipe-modal");
-    const closeBtn = document.getElementsByClassName("close")[0];
-    const modalTitle = document.getElementById("modal-title");
-    const modalInstructions = document.getElementById("modal-instructions");
+    // Mostrar historial de búsquedas
+    const searchHistoryContainer = document.createElement('div');
+    searchHistoryContainer.classList.add('search-history-container');
+    searchResults.insertBefore(searchHistoryContainer, searchResults.firstChild);
 
-    
-    function openModal(title, instructions) {
-        modalTitle.textContent = title;
-        modalInstructions.innerHTML = instructions;  
-        modal.style.display = "block";
+    function loadSearchHistory() {
+        const searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+        searchHistoryContainer.innerHTML = `<h4>Search History</h4>`;
+        searchHistory.forEach(term => {
+            const searchItem = document.createElement('button');
+            searchItem.textContent = term;
+            searchItem.classList.add('search-history-item');
+            searchItem.addEventListener('click', () => {
+                ingredientSearchInput.value = term;
+                ingredientSearchBtn.click(); // Llama a la búsqueda automáticamente
+            });
+            searchHistoryContainer.appendChild(searchItem);
+        });
     }
 
- 
-    closeBtn.onclick = function() {
-        modal.style.display = "none";
-    }
+    loadSearchHistory();
 
-
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
+    // Guardar búsqueda en localStorage
+    function saveSearchHistory(query) {
+        let searchHistory = JSON.parse(localStorage.getItem('searchHistory')) || [];
+        if (!searchHistory.includes(query)) {
+            searchHistory.push(query);
         }
+        localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
     }
 
     // Search by Ingredient
@@ -48,7 +54,9 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`);
             const data = await response.json();
-            displayResults(data.meals, `Results for ingredient: ${ingredient}`, false); 
+            displayResults(data.meals, `Results for ingredient: ${ingredient}`, false);
+            saveSearchHistory(ingredient);  // Guardar búsqueda
+            loadSearchHistory(); // Recargar historial
         } catch (error) {
             console.error("Error fetching recipes by ingredient:", error);
             searchResults.innerHTML = `<p style="color: red;">No recipes found for ingredient: ${ingredient}</p>`;
@@ -65,7 +73,9 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${mealName}`);
             const data = await response.json();
-            displayResults(data.meals, `Results for meal: ${mealName}`, true); 
+            displayResults(data.meals, `Results for meal: ${mealName}`, true);
+            saveSearchHistory(mealName);  // Guardar búsqueda
+            loadSearchHistory(); // Recargar historial
         } catch (error) {
             console.error("Error fetching recipes by meal name:", error);
             searchResults.innerHTML = `<p style="color: red;">No recipes found for meal: ${mealName}</p>`;
@@ -89,14 +99,35 @@ document.addEventListener("DOMContentLoaded", () => {
                 ${showRecipeButton ? '<button class="view-recipe-btn">View Recipe</button>' : ''}
             `;
 
-            // Event listener for opening modal (only if button is present)
             if (showRecipeButton) {
                 mealItem.querySelector('.view-recipe-btn').addEventListener('click', function() {
-                    openModal(meal.strMeal, meal.strInstructions);  
+                    openModal(meal.strMeal, meal.strInstructions);
                 });
             }
 
             searchResults.appendChild(mealItem);
         });
+    }
+
+    // Modal logic
+    const modal = document.getElementById("recipe-modal");
+    const closeBtn = document.getElementsByClassName("close")[0];
+    const modalTitle = document.getElementById("modal-title");
+    const modalInstructions = document.getElementById("modal-instructions");
+
+    function openModal(title, instructions) {
+        modalTitle.textContent = title;
+        modalInstructions.innerHTML = instructions;  
+        modal.style.display = "block";
+    }
+
+    closeBtn.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
     }
 });

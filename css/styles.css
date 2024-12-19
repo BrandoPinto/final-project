@@ -217,6 +217,29 @@ body {
     transform: translateY(-5px);
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
 }
+.search-history-container {
+    margin-top: 20px;
+}
+
+.search-history-container h4 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.search-history-item {
+    display: block;
+    padding: 5px;
+    background-color: #f4f4f4;
+    border: 1px solid #ddd;
+    margin-bottom: 5px;
+    cursor: pointer;
+    text-align: left;
+    border-radius: 5px;
+}
+
+.search-history-item:hover {
+    background-color: #e0e0e0;
+}
 
 /* Responsive Adjustments */
 @media (max-width: 768px) {
