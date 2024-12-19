@@ -19,19 +19,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const modalTitle = document.getElementById("modal-title");
     const modalInstructions = document.getElementById("modal-instructions");
 
-    // Open modal function
+    
     function openModal(title, instructions) {
         modalTitle.textContent = title;
-        modalInstructions.innerHTML = instructions;  // Asegúrate de usar innerHTML para las instrucciones.
+        modalInstructions.innerHTML = instructions;  
         modal.style.display = "block";
     }
 
-    // Close modal function
+ 
     closeBtn.onclick = function() {
         modal.style.display = "none";
     }
 
-    // Close modal if clicked outside the modal content
+
     window.onclick = function(event) {
         if (event.target == modal) {
             modal.style.display = "none";
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${ingredient}`);
             const data = await response.json();
-            displayResults(data.meals, `Results for ingredient: ${ingredient}`, false); // No mostrar botón
+            displayResults(data.meals, `Results for ingredient: ${ingredient}`, false); 
         } catch (error) {
             console.error("Error fetching recipes by ingredient:", error);
             searchResults.innerHTML = `<p style="color: red;">No recipes found for ingredient: ${ingredient}</p>`;
@@ -65,7 +65,7 @@ document.addEventListener("DOMContentLoaded", () => {
         try {
             const response = await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${mealName}`);
             const data = await response.json();
-            displayResults(data.meals, `Results for meal: ${mealName}`, true); // Mostrar botón
+            displayResults(data.meals, `Results for meal: ${mealName}`, true); 
         } catch (error) {
             console.error("Error fetching recipes by meal name:", error);
             searchResults.innerHTML = `<p style="color: red;">No recipes found for meal: ${mealName}</p>`;
@@ -92,7 +92,7 @@ document.addEventListener("DOMContentLoaded", () => {
             // Event listener for opening modal (only if button is present)
             if (showRecipeButton) {
                 mealItem.querySelector('.view-recipe-btn').addEventListener('click', function() {
-                    openModal(meal.strMeal, meal.strInstructions);  // Aquí se pasan las instrucciones correctamente
+                    openModal(meal.strMeal, meal.strInstructions);  
                 });
             }
 

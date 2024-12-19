@@ -14,7 +14,6 @@ export async function searchByIngredient(ingredient) {
     }
 }
 
-// Función para buscar recetas por nombre de comida
 export async function searchByMealName(mealName) {
     if (!mealName) {
         throw new Error('No meal name provided');

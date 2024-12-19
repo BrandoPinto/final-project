@@ -4,7 +4,7 @@ export const addSmoothTransitions = (elements) => {
     });
 };
 
-// Example: Apply to sections
+
 document.addEventListener("DOMContentLoaded", () => {
     const sections = document.querySelectorAll("section");
     addSmoothTransitions(sections);
